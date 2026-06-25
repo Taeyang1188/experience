@@ -69,8 +69,11 @@
 <script>
 const CHAPTERS = {
   curator: 'curator.html',
-  killer: 'killer.html',
-  otaku: 'otaku.html'
+  // 파일명은 기존 제작 과정에서 서로 바뀌어 있었으므로, 목차의 의미에 맞춰 연결한다.
+  // 챕터 2 · 꿈  -> 살인범/꿈 섹션(otaku.html)
+  // 챕터 3 · 시선 -> 오타쿠/시선 섹션(killer.html)
+  killer: 'otaku.html',
+  otaku: 'killer.html'
 };
 
 const LABELS = {
@@ -180,7 +183,10 @@ frame.addEventListener('load', () => {
 
 window.addEventListener('message', (e) => {
   if (!e.data) return;
-  if (e.data.type === 'nextChapter' && e.data.to) openChapter(e.data.to);
+  if (e.data.type === 'nextChapter' && e.data.to) {
+    if (e.data.to === 'home') goHome();
+    else openChapter(e.data.to);
+  }
   if (e.data.type === 'home') goHome();
   if (e.data.type === 'requestLang') {
     if (frame.contentWindow) frame.contentWindow.postMessage({ type: 'setLang', lang }, '*');
