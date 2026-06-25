@@ -124,7 +124,10 @@ try {
 
 function applyLang(nextLang) {
   lang = nextLang || lang;
-  try { localStorage.setItem('experience_lang', lang); } catch(e) {}
+  try {
+    localStorage.setItem('experience_lang', lang);
+    localStorage.setItem('lang', lang); // 하위 챕터 구버전 호환
+  } catch(e) {}
 
   btnKO.classList.toggle('active', lang === 'ko');
   btnEN.classList.toggle('active', lang === 'en');

@@ -358,7 +358,12 @@ const T = {
   }
 };
 
-let lang=(localStorage.getItem('lang')||'ko');
+let lang='ko';
+try {
+  const savedExperience = localStorage.getItem('experience_lang');
+  const savedLegacy = localStorage.getItem('lang');
+  lang = (savedExperience === 'ko' || savedExperience === 'en') ? savedExperience : ((savedLegacy === 'ko' || savedLegacy === 'en') ? savedLegacy : 'ko');
+} catch(e) {}
 let started=false;
 const $=id=>document.getElementById(id);
 
@@ -375,17 +380,35 @@ function applyStaticLang(){
   
   document.documentElement.lang=lang;
 }
-$('btnKO').addEventListener('click',()=>setLang('ko'));
-$('btnEN').addEventListener('click',()=>setLang('en'));
-function setLang(l){
-  if(l===lang)return;
+$('btnKO').addEventListener('click',()=>setLang('ko', true));
+$('btnEN').addEventListener('click',()=>setLang('en', true));
+function setLang(l, notifyParent=false){
+  if(l !== 'ko' && l !== 'en') return;
+  const changed = l !== lang;
   lang=l;
-  localStorage.setItem('lang', l);
+  try {
+    localStorage.setItem('experience_lang', l);
+    localStorage.setItem('lang', l); // 단독 실행/구버전 호환
+  } catch(e) {}
   $('btnKO').classList.toggle('active',l==='ko');
   $('btnEN').classList.toggle('active',l==='en');
   applyStaticLang();
+  if(notifyParent && window.parent && window.parent !== window){
+    window.parent.postMessage({ type:'updateLang', lang:l }, '*');
+  }
 }
-applyStaticLang();
+window.addEventListener('message', (e)=>{
+  if(!e.data) return;
+  if(e.data.type === 'setLang' && (e.data.lang === 'ko' || e.data.lang === 'en')){
+    setLang(e.data.lang, false);
+  }
+});
+try {
+  if(window.parent && window.parent !== window){
+    window.parent.postMessage({ type:'requestLang' }, '*');
+  }
+} catch(e) {}
+setLang(lang, false);
 
 /* ============ 엔진 ============ */
 const camera=$('camera'),scene=$('scene'),silhouettes=$('silhouettes'),speech=$('speech'),speechNum=$('speechNum');
@@ -583,7 +606,7 @@ async function run(){
   curatorWrap.classList.add('chat-fade');
   crowdImg.classList.add('chat-fade');
   chat.classList.add('show');
-  langToggle.classList.add('hidden');
+  // 챕터 안에서도 언어 전환이 가능해야 하므로 토글을 숨기지 않음.
   viewerCount=37+Math.floor(Math.random()*40);
   viewers.textContent=d().viewers(viewerCount);
 
@@ -608,7 +631,7 @@ async function submit(){
   await sleep(1500); stopAmbient();
   await sleep(900);
   chat.classList.remove('show');
-  langToggle.classList.remove('hidden');
+  // 언어 토글은 계속 표시 상태 유지.
   curatorWrap.classList.remove('chat-fade');
   crowdImg.classList.remove('chat-fade');
 
