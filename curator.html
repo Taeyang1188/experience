@@ -62,12 +62,15 @@
   @keyframes flicker{0%,100%{opacity:.8}45%{opacity:.55}70%{opacity:.85}}
 
   .silhouettes{opacity:1}
-  .curator-wrap{position:absolute;bottom:21%;left:50%;transform:translateX(-50%);z-index:5;opacity:0;transition:opacity 1.6s ease}
+  .curator-wrap{--curator-h:clamp(185px,36vmin,310px);position:absolute;bottom:21%;left:50%;transform:translateX(-50%);z-index:5;opacity:0;transition:opacity 1.6s ease}
   .curator-wrap.show{opacity:1}
   .crowd{position:absolute;left:50%;bottom:-8%;width:150%;max-width:none;height:auto;filter:brightness(.92);opacity:0;transform:translateX(-50%) scale(.4) translateY(46px);transform-origin:center bottom;transition:opacity 2s ease, filter 2s ease;z-index:2}
   .crowd.show{opacity:1}
   .crowd.dim{opacity:.2;filter:brightness(.35) blur(2.5px);-webkit-mask-image:radial-gradient(ellipse 32% 70% at 50% 45%, transparent 0%, transparent 28%, #000 60%);mask-image:radial-gradient(ellipse 32% 70% at 50% 45%, transparent 0%, transparent 28%, #000 60%)}
-  .curator{position:relative;width:0;height:clamp(185px,36vmin,310px)}
+  .curator-wrap.chat-fade{opacity:0;transition:opacity 2.8s ease;pointer-events:none}
+  .crowd.chat-fade{opacity:0!important;transition:opacity 2.8s ease, filter 2.8s ease, transform 1.3s cubic-bezier(.34,.02,.5,1);pointer-events:none}
+
+  .curator{position:relative;width:0;height:var(--curator-h)}
   .curator .pose{position:absolute;bottom:0;height:100%;width:auto;opacity:0;transition:opacity 1s ease;filter:drop-shadow(0 0 34px rgba(0,0,0,.9))}
   .curator .pose.show{opacity:1}
   /* 두 자세 모두 몸통(왼쪽 가장자리 근처)이 같은 x에 오도록 정렬.
@@ -77,9 +80,9 @@
   .curator .pose-gesture{left:50%;transform:translateX(-26%)}
   .curator > svg.pose{display:block;width:100%;height:100%}
   /* 큐레이터 말풍선 (카운트다운용) */
-  .speech{position:absolute;bottom:clamp(90px,17vmin,150px);left:calc(50% + clamp(18px,3vmin,30px));width:clamp(62px,11vmin,96px);height:clamp(50px,9vmin,78px);transform:scale(.7);transform-origin:left bottom;opacity:0;transition:opacity .25s ease,transform .25s ease;z-index:6;filter:drop-shadow(0 0 12px rgba(255,255,255,.3))}
+  .speech{position:absolute;left:calc(var(--curator-h) * .15);bottom:calc(var(--curator-h) * .72);width:calc(var(--curator-h) * .31);height:calc(var(--curator-h) * .25);transform:scale(.7);transform-origin:left bottom;opacity:0;transition:opacity .25s ease,transform .25s ease;z-index:6;filter:drop-shadow(0 0 12px rgba(255,255,255,.3));pointer-events:none}
   .speech-bg{position:absolute;inset:0;width:100%;height:100%}
-  .speech-num{position:absolute;left:0;right:0;top:6%;height:62%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Mono',monospace;font-weight:700;font-size:34px;line-height:1}
+  .speech-num{position:absolute;left:0;right:0;top:6%;height:62%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Mono',monospace;font-weight:700;font-size:calc(var(--curator-h) * .11);line-height:1}
   .speech.pop{opacity:1;transform:scale(1)}
 
   .vn{position:fixed;left:0;right:0;bottom:0;z-index:30}
@@ -118,7 +121,7 @@
   .chat-input button{background:none;border:1px solid var(--cursor);color:var(--cursor);font-family:'Space Mono',monospace;font-size:12px;padding:0 12px;border-radius:6px;cursor:pointer;transition:background .2s}
   .chat-input button:hover{background:rgba(123,255,158,.12)}.chat-input button:disabled{opacity:.4;cursor:default}
 
-  .prompt-hint{position:fixed;left:50%;bottom:210px;transform:translateX(-50%);z-index:45;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.15em;color:var(--bone);opacity:0;transition:opacity 1s ease;text-align:center;pointer-events:none;background:rgba(10,10,14,.7);padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(4px)}
+  .prompt-hint{position:fixed;left:22px;top:64px;transform:none;z-index:45;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--bone);opacity:0;transition:opacity 1s ease;text-align:left;pointer-events:none;background:rgba(10,10,14,.72);padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(4px)}
   .prompt-hint.show{opacity:1;animation:nextpulse 2.4s ease-in-out infinite}
 
   .blackout{position:fixed;inset:0;z-index:200;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1.2s ease}
@@ -145,10 +148,10 @@
   @media(max-width:680px){
     .room{width:96vw;height:78vh}
     .ray{width:clamp(180px,42vmin,310px);height:clamp(180px,42vmin,310px)}
-    .curator{height:clamp(150px,34vmin,240px)}
+    .curator-wrap{--curator-h:clamp(150px,34vmin,240px)}
     .crowd{width:175%;bottom:-7%;transform:translateX(-50%) scale(.34) translateY(24px)}
   }
-  @media(max-width:680px){body{font-size:16px}.chat{width:82vw}.vn-text{font-size:18px;line-height:1.8}.vn-box{padding:22px 22px 36px}.enter .title{letter-spacing:.18em}.speech-num{font-size:28px}}
+  @media(max-width:680px){body{font-size:16px}.chat{width:82vw}.vn-text{font-size:18px;line-height:1.8}.vn-box{padding:22px 22px 36px}.enter .title{letter-spacing:.18em}}
   @media(prefers-reduced-motion:reduce){.camera{transition:transform 1s ease}.shake.walking{animation:none}.ray .core,.ray .beams,.curator{animation:none}}
 </style>
 </head>
@@ -242,7 +245,7 @@ const T = {
     enterTitle:'경험', enterHint:'click to enter the dark',
     liveLabel:'LIVE · 경험 (經驗)', viewers:n=>'관람 '+n,
     chatPlaceholder:'지금 무엇이 느껴지나요…', send:'전송',
-    promptHint:'큐레이터가 당신의 감상을 기다리고 있다 · 오른쪽 채팅에 입력',
+    promptHint:'큐레이터가 당신의 감상을 기다리고 있습니다',
     nextHint:'▼', backTip:'처음으로 되돌아가기',
     meNick:'나', curator:'큐레이터', narr:'',
     intro:[
@@ -268,7 +271,16 @@ const T = {
       ['인간의 감각은 빛과 깊은 관련이 있습니다. 우리의 수용체가 반사된 빛을 받아들이고 모든 공간과 사물을 꾸며내지요.','quote','curator'],
       ['…그래서 여러분들께 여쭤보고 싶네요, 이 작품을 보는 지금 여러분들은 어떤 걸 느끼시나요?','quote','curator'],
     ],
-    afterInput:(v)=>[`'${v}'라… 평소의 나라면 느끼기 어려운 감성적인 평가인 것 같다. 갑작스러운 정전 때문에 조금 놀랐나?`,'inner'],
+    afterInput:(v)=>{
+      const raw=String(v||'').trim();
+      const compact=raw.replace(/[\s.,!?~…ㆍ·_\-\/\\|()[\]{}'"“”‘’]+/g,'');
+      if(compact && /^[ㄱ-ㅎㅏ-ㅣ]+$/.test(compact)) return ['나는 예술작품 같은건 잘 모르겠다.','inner'];
+      if(/모르|몰라|몰러|모름|몰겠/.test(raw)) return ['나는 예술작품 같은건 잘 모르겠다.','inner'];
+      if(raw.includes('달')) return ['나는 둥근 빛을 보면 달이 떠오르는 것 같다.','inner'];
+      if(raw.includes('해')||raw.includes('태양')) return ['나는 둥근 빛을 보면 해가 떠오르는 것 같다.','inner'];
+      if(raw.includes('빛')) return ['빛이 빛이지.. 저 사람은 과장하는 걸 꽤 좋아하는 것 같다.','inner'];
+      return [`'${raw}'라… 평소의 나라면 느끼기 어려운 감성적인 평가인 것 같다. 갑작스러운 정전 때문에 조금 놀랐나?`,'inner'];
+    },
     beforeCount:[
       ['…좋습니다. 모두 잘 감상하셨다면, 바로 다음 작품으로 넘어가시죠.','quote','curator'],
       ['전시 장소는 여러분들이 서 계신 바로 이곳입니다. 제가 다섯을 센 뒤, 다음 작품 감상을 시작하겠습니다. 작품 감상은 10초간 진행됩니다.','quote','curator'],
@@ -288,7 +300,7 @@ const T = {
       ['즐거운 관람 되셨길 바랍니다. \'경험\' 관람은 오늘로 끝났습니다. 7월부터는 신예 작가들의 단체전이 예정돼 있으니 많은 관심 부탁드릴게요~','quote','curator'],
       ['타르 덩어리처럼만 보이던 군집들이, 작품이 어땠는지 떠들며 다시 각각의 개인으로 뿔뿔이 흩어져 갔다.','inner'],
     ],
-    endMark:'— 전시회 —',
+    endMark:'— 경험 —',
     nicks:['달밤산책','q_ratio','무명관람','art_school','지나가던행인','blacklight','노을_','관성','조도0lux','silent_','눈먼새','perilla','전시중독','匿名','wavelength','ㅇㅇ','미술관죽순이','void_walker','감상문','red_shift'],
     reactions:['어… 아무것도 안 보이는데?','이게 작품이라고?','뭔가 따뜻한 느낌이네','솔직히 잘 모르겠다 ㅋㅋ','눈이 좀 아파','달처럼 보이기도','정전인 줄 알았어','오 소름 돋네','이거 사기 아니야?','조용한 게 좋네요','귀뚜라미 소리 들리는 듯','뭔가 보일 듯 말 듯하다','이게 감동인가…?','집중하니까 다르게 보여','난 그냥 깜깜하기만 한데','명상하는 기분이다','와 발상이 신선하다','돈 좀 아까운데','은근히 빠져드네','뭘 느껴야 하는 거지?','빛 퍼지는 게 예쁘다','솔직히 좀 무섭다','심오한 것 같기도','글쎄… 잘 모르겠어','자꾸 보게 되네','적막함이 미쳤다','머릿속이 텅 비는 느낌','이런 게 현대미술이구나','뭔가 텅 빈 느낌이야','???','와 진짜 아무것도 없네','눈 감은 거랑 똑같잖아','근데 묘하게 끌린다','이런 거 처음 봐','괜히 숙연해지네','빛만 봐도 벅차다','아 뭔가 알 것 같아','전혀 모르겠음 ㅋㅋㅋ','생각보다 길다','숨 참게 되네','어둠이 이렇게 깊었나','뭔가 울컥하는데','별처럼 보여','이게 끝이야?','계속 쳐다보게 됨','고요해서 좋다','솔직히 지루한데','오히려 차분해지네','뭔가 압도당하는 기분','진짜 빛밖에 없네'],
   },
@@ -340,7 +352,7 @@ const T = {
       ['I hope you enjoyed it. The "Experience" showing ends today. From July, a group show of new artists awaits — please stay tuned~','quote','curator'],
       ['The mass that had looked like a lump of tar broke apart, chattering about the work, scattering back into separate individuals.','inner'],
     ],
-    endMark:'— Exhibition —',
+    endMark:'— Experience —',
     nicks:['moonwalk','q_ratio','anon_view','art_school','passerby','blacklight','duskk','inertia','0lux','silent_','blindbird','perilla','exhib_addict','anon','wavelength','idk','museumrat','void_walker','field_note','red_shift'],
     reactions:['uh… I see nothing?','this is the artwork?','kind of a warm feeling','honestly no idea lol','my eyes hurt a bit','looks a little like the moon','thought it was a power cut','okay that gave me chills','isn\'t this a scam?','the quiet is kinda nice','I think I hear crickets','almost visible, almost not','is this what moving feels like…?','looks different when you focus','it\'s just dark for me','feels like meditation','wow, fresh concept','kind of a waste of money','weirdly drawn in','what am I supposed to feel?','the spreading light is pretty','honestly a bit scary','feels sort of profound','hmm… not sure','I keep looking','the silence is wild','my head goes blank','so this is modern art','feels kind of empty','???','wow there really is nothing','same as closing my eyes','but it\'s strangely compelling','never seen anything like this','feels oddly solemn','the light alone is overwhelming','ah I think I get it','no clue lol','longer than I expected','I\'m holding my breath','was the dark always this deep','something\'s welling up','looks like a star','that\'s it?','can\'t look away','I like how still it is','honestly kind of boring','it\'s calming actually','feels overwhelming somehow','really just light and nothing'],
   }
@@ -567,6 +579,9 @@ async function run(){
 
   // 큐레이터의 질문 뒤, 정적이 흐른다 — 채팅창은 천천히 등장
   await sleep(2600);
+  // 채팅창이 열리는 속도에 맞춰 큐레이터와 관객은 천천히 사라지고, 빛만 남긴다.
+  curatorWrap.classList.add('chat-fade');
+  crowdImg.classList.add('chat-fade');
   chat.classList.add('show');
   langToggle.classList.add('hidden');
   viewerCount=37+Math.floor(Math.random()*40);
@@ -594,6 +609,8 @@ async function submit(){
   await sleep(900);
   chat.classList.remove('show');
   langToggle.classList.remove('hidden');
+  curatorWrap.classList.remove('chat-fade');
+  crowdImg.classList.remove('chat-fade');
 
   await sleep(500);
   dimVeil.classList.add('show');
@@ -693,29 +710,5 @@ async function submit(){
 chatSend.addEventListener('click',submit);
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.stopPropagation();submit();}});
 </script>
-
-<script>
-(function(){
-  function goIndexHome(){
-    try {
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({type:'home'}, '*');
-        return;
-      }
-    } catch(e) {}
-    window.location.href = 'index.html';
-  }
-  window.goIndexHome = goIndexHome;
-  window.addEventListener('message', function(e){
-    if(e.data && e.data.type === 'setLang' && typeof applyLang === 'function'){
-      try {
-        if(typeof lang !== 'undefined' && e.data.lang) lang = e.data.lang;
-        applyLang();
-      } catch(err){}
-    }
-  });
-})();
-</script>
-
 </body>
 </html>
