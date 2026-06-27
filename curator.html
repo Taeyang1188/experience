@@ -53,6 +53,11 @@
   .ray{position:absolute;top:39%;left:50%;width:clamp(230px,42vmin,430px);height:clamp(230px,42vmin,430px);transform:translate(-50%,-50%);pointer-events:none;transition:opacity 1.1s ease,filter 1.1s ease;mix-blend-mode:screen}
   .ray.off{opacity:0;filter:brightness(.2)}
   .ray.dimlit{opacity:.5}
+  .ray.chat-bright{opacity:1;filter:brightness(1.28) saturate(1.12) drop-shadow(0 0 28px rgba(255,225,150,.42))}
+  .ray.chat-bright .core{filter:blur(1.2px) brightness(1.22);transform:scale(1.06)}
+  .ray.chat-bright .beams{opacity:.9;filter:blur(4px) brightness(1.18)}
+  .ray.chat-bright::before{opacity:1;filter:blur(16px) brightness(1.28)}
+  .ray.chat-bright::after{opacity:1;filter:blur(6px) brightness(1.22)}
   .ray .core{position:absolute;inset:16%;border-radius:50%;background:radial-gradient(circle at 50% 50%, rgba(255,255,235,.95) 0%, rgba(255,230,155,.58) 20%, rgba(255,200,105,.26) 42%, rgba(255,180,90,.08) 62%, transparent 78%);filter:blur(1.5px);animation:pulse 5.5s ease-in-out infinite}
   .ray .beams{position:absolute;inset:-34%;border-radius:50%;background:repeating-conic-gradient(from -7deg, rgba(255,230,150,.58) 0deg, rgba(255,220,128,.34) 3.2deg, transparent 8deg, transparent 19deg);-webkit-mask:radial-gradient(ellipse at center, rgba(0,0,0,.95) 7%, rgba(0,0,0,.75) 24%, rgba(0,0,0,.38) 48%, transparent 72%);mask:radial-gradient(ellipse at center, rgba(0,0,0,.95) 7%, rgba(0,0,0,.75) 24%, rgba(0,0,0,.38) 48%, transparent 72%);filter:blur(5px);animation:spin 80s linear infinite, flicker 7s ease-in-out infinite;opacity:.72}
   .ray::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle, rgba(255,235,180,.30), rgba(255,205,110,.10) 36%, transparent 70%);filter:blur(18px);opacity:.85}
@@ -90,6 +95,7 @@
   .dim-veil.show{opacity:.74}
   .vn-box{margin:0 auto;max-width:760px;padding:26px 34px 40px;min-height:128px;background:linear-gradient(to top, rgba(5,5,6,.96) 60%, rgba(5,5,6,.6) 100%);border-top:1px solid rgba(255,255,255,.07);opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;position:relative;cursor:pointer}
   .vn-box.show{opacity:1;transform:none}
+  .vn-box.chat-soft{opacity:.26;pointer-events:none;filter:blur(.2px)}
   .vn-speaker{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;color:var(--text-dim);min-height:1.2em}
   .vn-text{font-family:'Pretendard',system-ui,sans-serif;line-height:1.9;color:var(--bone);font-size:21px;font-weight:400;letter-spacing:-.01em;min-height:1.9em}
   .vn-text.quote{font-style:italic}
@@ -666,6 +672,9 @@ async function run(){
   curatorWrap.classList.add('chat-fade');
   crowdImg.classList.add('chat-fade');
   chat.classList.add('show');
+  // 입력창이 떠 있는 동안 대사창은 반투명하게 낮추고, 광원은 더 선명하게 강조
+  vnBox.classList.add('chat-soft');
+  ray.classList.add('chat-bright');
   // 감상 입력창이 화면에 떠 있는 동안에는 언어 토글을 잠시 비활성화해 겹침과 오조작을 방지
   langToggle.classList.add('hidden');
   viewerCount=37+Math.floor(Math.random()*40);
@@ -692,6 +701,8 @@ async function submit(){
   await sleep(1500); stopAmbient();
   await sleep(900);
   chat.classList.remove('show');
+  vnBox.classList.remove('chat-soft');
+  ray.classList.remove('chat-bright');
   // 입력창이 사라진 뒤 언어 토글을 다시 활성화
   langToggle.classList.remove('hidden');
   curatorWrap.classList.remove('chat-fade');
