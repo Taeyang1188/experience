@@ -153,29 +153,65 @@
   }
   @media(max-width:680px){
     body{font-size:16px}
-    .chat{width:min(72vw,340px)}
+    /* 모바일에서는 채팅창을 전체 우측 패널로 펼치지 않고,
+       광원 오브젝트를 피해 우측 하단의 균형 잡힌 플로팅 패널로 표시 */
+    .chat{
+      top:auto;
+      right:max(10px, env(safe-area-inset-right));
+      bottom:max(14px, env(safe-area-inset-bottom));
+      width:clamp(230px,54vw,300px);
+      height:min(46vh,360px);
+      border-left:1px solid rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      overflow:hidden;
+      transform:translateY(calc(100% + 24px));
+      box-shadow:0 18px 50px rgba(0,0,0,.45);
+    }
+    .chat.show{transform:none}
+    .chat-head{padding:10px 12px;font-size:10px}
+    .chat-body{padding:10px;gap:8px}
+    .msg{font-size:11.5px;line-height:1.45}
     .chat-input{
-      width:clamp(240px,62vw,320px);
-      margin:0 auto 16px;
-      padding:10px;
-      border:1px solid rgba(123,255,158,.25);
-      border-radius:14px;
-      background:rgba(8,8,12,.72);
+      width:100%;
+      margin:0;
+      padding:9px;
+      border-top:1px solid rgba(123,255,158,.2);
+      border-left:0;
+      border-right:0;
+      border-bottom:0;
+      border-radius:0;
+      background:rgba(8,8,12,.78);
       backdrop-filter:blur(10px)
     }
     .chat-input input{
       min-width:0;
-      font-size:13px;
-      padding:10px 12px
+      font-size:12px;
+      padding:9px 10px
     }
     .chat-input button{
       flex-shrink:0;
-      padding:0 14px
+      padding:0 11px
+    }
+    .prompt-hint{
+      left:12px;
+      right:calc(clamp(230px,54vw,300px) + 24px);
+      top:auto;
+      bottom:calc(max(14px, env(safe-area-inset-bottom)) + min(46vh,360px) + 10px);
+      font-size:10px;
+      padding:7px 10px;
     }
     .vn-text{font-size:18px;line-height:1.8}
     .vn-box{padding:22px 22px 36px}
     .enter .title{letter-spacing:.18em}
-}
+  }
+  @media(max-width:430px){
+    .chat{width:min(62vw,270px);height:min(42vh,330px)}
+    .prompt-hint{right:calc(min(62vw,270px) + 22px);bottom:calc(max(14px, env(safe-area-inset-bottom)) + min(42vh,330px) + 10px)}
+    .chat-input{gap:6px;padding:8px}
+    .chat-input input{font-size:11.5px;padding:8px 9px}
+    .chat-input button{font-size:11px;padding:0 9px}
+  }
   @media(prefers-reduced-motion:reduce){.camera{transition:transform 1s ease}.shake.walking{animation:none}.ray .core,.ray .beams,.curator{animation:none}}
 </style>
 </head>
@@ -630,7 +666,8 @@ async function run(){
   curatorWrap.classList.add('chat-fade');
   crowdImg.classList.add('chat-fade');
   chat.classList.add('show');
-  // 챕터 안에서도 언어 전환이 가능해야 하므로 토글을 숨기지 않음.
+  // 감상 입력창이 화면에 떠 있는 동안에는 언어 토글을 잠시 비활성화해 겹침과 오조작을 방지
+  langToggle.classList.add('hidden');
   viewerCount=37+Math.floor(Math.random()*40);
   viewers.textContent=d().viewers(viewerCount);
 
@@ -655,7 +692,8 @@ async function submit(){
   await sleep(1500); stopAmbient();
   await sleep(900);
   chat.classList.remove('show');
-  // 언어 토글은 계속 표시 상태 유지.
+  // 입력창이 사라진 뒤 언어 토글을 다시 활성화
+  langToggle.classList.remove('hidden');
   curatorWrap.classList.remove('chat-fade');
   crowdImg.classList.remove('chat-fade');
 
